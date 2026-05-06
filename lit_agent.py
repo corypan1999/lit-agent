@@ -26,8 +26,9 @@ SENDER_EMAIL    = os.environ["GMAIL_ADDRESS"]       # set in GitHub secrets
 GMAIL_APP_PASS  = os.environ["GMAIL_APP_PASSWORD"]  # set in GitHub secrets
 ANTHROPIC_KEY   = os.environ["ANTHROPIC_API_KEY"]   # set in GitHub secrets
 
-SEEN_FILE = "seen_articles.json"   # persisted between runs via GitHub cache
-LOOKBACK_HOURS = 48                # catch any articles missed yesterday
+SEEN_FILE      = "seen_articles.json"  # committed to repo after each run
+LOOKBACK_HOURS = 48                    # catch any articles missed yesterday
+PRUNE_DAYS     = 90                    # drop seen entries older than this
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
@@ -153,15 +154,36 @@ EXCLUDE if primarily about:
 # ---------------------------------------------------------------------------
 
 def load_seen() -> set:
-    if Path(SEEN_FILE).exists():
-        with open(SEEN_FILE) as f:
-            return set(json.load(f))
-    return set()
+    """Load seen article IDs from file, ignoring entries older than PRUNE_DAYS."""
+    if not Path(SEEN_FILE).exists():
+        return set()
+    with open(SEEN_FILE) as f:
+        data = json.load(f)
+    # Support both old format (list of IDs) and new format (dict of id -> ISO timestamp)
+    if isinstance(data, list):
+        return set(data)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=PRUNE_DAYS)
+    return {
+        aid for aid, ts in data.items()
+        if datetime.fromisoformat(ts) > cutoff
+    }
 
 
-def save_seen(seen: set):
+def save_seen(seen_ids: set, existing_timestamps: dict):
+    """Save seen IDs with timestamps, pruning entries older than PRUNE_DAYS."""
+    cutoff = datetime.now(timezone.utc) - timedelta(days=PRUNE_DAYS)
+    now_str = datetime.now(timezone.utc).isoformat()
+    # Carry forward existing timestamps; stamp any new IDs with now
+    merged = {
+        aid: ts for aid, ts in existing_timestamps.items()
+        if datetime.fromisoformat(ts) > cutoff
+    }
+    for aid in seen_ids:
+        if aid not in merged:
+            merged[aid] = now_str
     with open(SEEN_FILE, "w") as f:
-        json.dump(list(seen), f)
+        json.dump(merged, f, indent=2)
+    log.info(f"Seen cache: {len(merged)} entries (pruned to {PRUNE_DAYS}-day window)")
 
 
 def article_id(title: str, link: str) -> str:
@@ -171,9 +193,19 @@ def article_id(title: str, link: str) -> str:
 # Feed fetching
 # ---------------------------------------------------------------------------
 
-def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> list[dict]:
+def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], dict]:
+    """Returns (new articles, existing timestamps dict for save_seen)."""
     cutoff = datetime.now(timezone.utc) - timedelta(hours=lookback_hours)
-    seen   = load_seen()
+
+    # Load existing seen data - both the ID set and raw timestamps
+    existing_timestamps: dict = {}
+    if Path(SEEN_FILE).exists():
+        with open(SEEN_FILE) as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            existing_timestamps = data
+
+    seen = load_seen()
     articles = []
 
     for journal, (url, tier) in FEEDS.items():
@@ -219,7 +251,7 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> list[dict]:
             })
 
     log.info(f"Fetched {len(articles)} new articles across all feeds.")
-    return articles
+    return articles, existing_timestamps
 
 # ---------------------------------------------------------------------------
 # Claude relevance filtering
@@ -422,8 +454,8 @@ def send_email(html_body: str, n_highlighted: int):
 def main():
     log.info("=== Literature Agent starting ===")
 
-    articles = fetch_articles()
-    total    = len(articles)
+    articles, existing_timestamps = fetch_articles()
+    total = len(articles)
 
     if not articles:
         log.info("No new articles found. Sending brief notice.")
@@ -433,10 +465,9 @@ def main():
 
     highlighted, borderline = filter_articles(articles)
 
-    # Mark all fetched articles as seen (even excluded ones)
-    seen = load_seen()
-    seen.update(a["id"] for a in articles)
-    save_seen(seen)
+    # Mark all fetched articles as seen and save with 90-day pruning
+    seen_ids = set(a["id"] for a in articles)
+    save_seen(seen_ids, existing_timestamps)
 
     html = build_email_html(highlighted, borderline, total)
     send_email(html, len(highlighted))
