@@ -11,18 +11,13 @@ jobs:
   run-agent:
     runs-on: ubuntu-latest
 
+    # Allow the workflow to commit seen_articles.json back to the repo
+    permissions:
+      contents: write
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
-      # Restore the seen-articles cache so we don't re-send duplicates
-      - name: Restore seen articles cache
-        uses: actions/cache@v4
-        with:
-          path: seen_articles.json
-          key: seen-articles-${{ github.run_id }}
-          restore-keys: |
-            seen-articles-
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,15 +29,17 @@ jobs:
 
       - name: Run literature agent
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_ADDRESS:     ${{ secrets.GMAIL_ADDRESS }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_ADDRESS:      ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python lit_agent.py
 
-      # Save updated seen-articles so tomorrow's run knows what was already sent
-      - name: Save seen articles cache
+      # Commit the updated seen_articles.json so it persists reliably
+      - name: Save seen articles to repo
         if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: seen_articles.json
-          key: seen-articles-${{ github.run_id }}
+        run: |
+          git config user.name  "lit-agent"
+          git config user.email "lit-agent@noreply"
+          git add seen_articles.json
+          git diff --cached --quiet || git commit -m "chore: update seen articles [skip ci]"
+          git push
