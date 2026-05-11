@@ -52,31 +52,34 @@ FEEDS = {
     "JEM":                ("https://rupress.org/jem/rss/ahead",                          1),
 
     # --- Tier 2 ---
-    "PNAS":                        ("https://www.pnas.org/rss/current.xml",                        2),
-    "Nature Communications":       ("https://www.nature.com/ncomms.rss",                           2),
-    "JCI":                         ("https://www.jci.org/feed/rss",                                2),
-    "Cancer Cell":                 ("https://www.cell.com/cancer-cell/inpress.rss",                2),
-    "Journal of Clinical Oncology":("https://ascopubs.org/action/showFeed?type=etoc&feed=rss&jc=jco", 2),
-    "Nature Cancer":               ("https://www.nature.com/natcancer.rss",                        2),
-    "Cancer Discovery":            ("https://aacrjournals.org/cancerdiscovery/rss/ahead",          2),
-    "Nature Methods":              ("https://www.nature.com/nmeth.rss",                            2),
-    "Nature Biotechnology":        ("https://www.nature.com/nbt.rss",                              2),
+    "PNAS":                         ("https://www.pnas.org/rss/current.xml",                           2),
+    "Nature Communications":        ("https://www.nature.com/ncomms.rss",                              2),
+    "JCI":                          ("https://www.jci.org/feed/rss",                                   2),
+    "Cancer Cell":                  ("https://www.cell.com/cancer-cell/inpress.rss",                   2),
+    "Journal of Clinical Oncology": ("https://ascopubs.org/action/showFeed?type=etoc&feed=rss&jc=jco", 2),
+    "Nature Cancer":                ("https://www.nature.com/natcancer.rss",                           2),
+    "Cancer Discovery":             ("https://aacrjournals.org/cancerdiscovery/rss/ahead",             2),
+    "Nature Methods":               ("https://www.nature.com/nmeth.rss",                               2),
+    "Nature Biotechnology":         ("https://www.nature.com/nbt.rss",                                 2),
+    "bioRxiv (Immunology)":         ("https://connect.biorxiv.org/biorxiv_xml.php?subject=immunology", 2),
+    "bioRxiv (Cancer Biology)":     ("https://connect.biorxiv.org/biorxiv_xml.php?subject=cancer_biology", 2),
 
     # --- Tier 3 ---
-    "Cell Reports":              ("https://www.cell.com/cell-reports/inpress.rss",                         3),
-    "Cancer Immunology Research":("https://aacrjournals.org/cancerimmunolres/rss/ahead",                   3),
-    "Frontiers in Immunology":   ("https://www.frontiersin.org/journals/immunology/rss",                   3),
-    "Journal of Immunology":     ("https://www.jimmunol.org/rss/current.xml",                              3),
-    "Cancer Research":           ("https://aacrjournals.org/cancerres/rss/ahead",                          3),
-    "eLife":                     ("https://elifesciences.org/rss/recent.xml",                              3),
-    "Clinical Cancer Research":  ("https://aacrjournals.org/clincancerres/rss/ahead",                      3),
-    "Cell Systems":              ("https://www.cell.com/cell-systems/inpress.rss",                         3),
-    "Genome Biology":            ("https://genomebiology.biomedcentral.com/articles/most-recent/rss.xml",  3),
-    "Nucleic Acids Research":    ("https://academic.oup.com/rss/site_5168/3091.xml",                       3),
-    "Cell Reports Medicine":     ("https://www.cell.com/cell-reports-medicine/inpress.rss",                3),
-    "npj Precision Oncology":    ("https://www.nature.com/npjprecisiononcology.rss",                       3),
-    "Mucosal Immunology":        ("https://www.nature.com/mi.rss",                                         3),
-    "European Journal of Immunology": ("https://onlinelibrary.wiley.com/feed/15214141/most-recent",        3),
+    "Cell Reports":               ("https://www.cell.com/cell-reports/inpress.rss",                         3),
+    "Cancer Immunology Research": ("https://aacrjournals.org/cancerimmunolres/rss/ahead",                   3),
+    "Frontiers in Immunology":    ("https://www.frontiersin.org/journals/immunology/rss",                   3),
+    "Journal of Immunology":      ("https://www.jimmunol.org/rss/current.xml",                              3),
+    "Cancer Research":            ("https://aacrjournals.org/cancerres/rss/ahead",                          3),
+    "eLife":                      ("https://elifesciences.org/rss/recent.xml",                              3),
+    "Clinical Cancer Research":   ("https://aacrjournals.org/clincancerres/rss/ahead",                      3),
+    "Cell Systems":               ("https://www.cell.com/cell-systems/inpress.rss",                         3),
+    "Genome Biology":             ("https://genomebiology.biomedcentral.com/articles/most-recent/rss.xml",  3),
+    "Nucleic Acids Research":     ("https://academic.oup.com/rss/site_5168/3091.xml",                       3),
+    "Cell Reports Medicine":      ("https://www.cell.com/cell-reports-medicine/inpress.rss",                3),
+    "npj Precision Oncology":     ("https://www.nature.com/npjprecisiononcology.rss",                       3),
+    "Mucosal Immunology":         ("https://www.nature.com/mi.rss",                                         3),
+    "European Journal of Immunology": ("https://onlinelibrary.wiley.com/feed/15214141/most-recent",         3),
+    "bioRxiv (Genomics)":         ("https://connect.biorxiv.org/biorxiv_xml.php?subject=genomics",          3),
 }
 
 # Tier thresholds passed to Claude
@@ -173,7 +176,6 @@ def save_seen(seen_ids: set, existing_timestamps: dict):
     """Save seen IDs with timestamps, pruning entries older than PRUNE_DAYS."""
     cutoff = datetime.now(timezone.utc) - timedelta(days=PRUNE_DAYS)
     now_str = datetime.now(timezone.utc).isoformat()
-    # Carry forward existing timestamps; stamp any new IDs with now
     merged = {
         aid: ts for aid, ts in existing_timestamps.items()
         if datetime.fromisoformat(ts) > cutoff
@@ -197,7 +199,6 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
     """Returns (new articles, existing timestamps dict for save_seen)."""
     cutoff = datetime.now(timezone.utc) - timedelta(hours=lookback_hours)
 
-    # Load existing seen data - both the ID set and raw timestamps
     existing_timestamps: dict = {}
     if Path(SEEN_FILE).exists():
         with open(SEEN_FILE) as f:
@@ -219,7 +220,6 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
             continue
 
         for entry in feed.entries:
-            # Parse publication date
             pub = None
             for attr in ("published_parsed", "updated_parsed"):
                 if hasattr(entry, attr) and getattr(entry, attr):
@@ -230,7 +230,7 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
                     break
 
             if pub and pub < cutoff:
-                continue  # too old
+                continue
 
             title   = entry.get("title", "").strip()
             link    = entry.get("link", "").strip()
@@ -246,7 +246,7 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
                 "tier":     tier,
                 "title":    title,
                 "link":     link,
-                "abstract": summary[:2000],  # cap for token budget
+                "abstract": summary[:2000],
                 "pub_date": pub.strftime("%b %d, %Y") if pub else "recent",
             })
 
@@ -276,7 +276,7 @@ Respond ONLY with valid JSON (no markdown, no preamble) in this exact format:
       "id": "<article id>",
       "relevant": true or false,
       "borderline": true or false,
-      "summary": "<2-3 sentence summary for an expert immunologist: what was studied, key finding, why relevant to the lab. Only include if relevant or borderline.>"
+      "summary": "<2-3 sentence summary for an expert immunologist: what was studied, the key finding, and the main conclusion or implication. Focus on the science - do not include a sentence about why this is relevant to the lab.>"
     }},
     ...
   ]
@@ -316,14 +316,13 @@ def filter_articles(articles: list[dict]) -> tuple[list[dict], list[dict]]:
 
         log.info(f"Filtering batch {i//20 + 1} ({len(batch)} articles) ...")
         response = client.messages.create(
-            model="claude-opus-4-5",
+            model="claude-sonnet-4-6",
             max_tokens=4096,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": json.dumps(payload)}],
         )
 
         raw = response.content[0].text.strip()
-        # Strip markdown fences if present
         if raw.startswith("```"):
             raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
 
@@ -333,7 +332,6 @@ def filter_articles(articles: list[dict]) -> tuple[list[dict], list[dict]]:
             log.error(f"JSON parse error from Claude: {e}\nRaw: {raw[:500]}")
             continue
 
-        # Map results back to full article dicts
         result_map = {r["id"]: r for r in result.get("results", [])}
         for art in batch:
             r = result_map.get(art["id"])
@@ -465,7 +463,6 @@ def main():
 
     highlighted, borderline = filter_articles(articles)
 
-    # Mark all fetched articles as seen and save with 90-day pruning
     seen_ids = set(a["id"] for a in articles)
     save_seen(seen_ids, existing_timestamps)
 
