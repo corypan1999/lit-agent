@@ -20,16 +20,13 @@ import anthropic
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-
-RECIPIENT_EMAIL = "william.hudson@bcm.edu"
+RECIPIENT_EMAIL = ["william.hudson@bcm.edu", "Colby.Hofferek@bcm.edu", "Dylan.Pfannenstiel@bcm.edu", "angela.addison@bcm.edu", "maria.stegantseva@bcm.edu"]
 SENDER_EMAIL    = os.environ["GMAIL_ADDRESS"]       # set in GitHub secrets
 GMAIL_APP_PASS  = os.environ["GMAIL_APP_PASSWORD"]  # set in GitHub secrets
 ANTHROPIC_KEY   = os.environ["ANTHROPIC_API_KEY"]   # set in GitHub secrets
-
 SEEN_FILE      = "seen_articles.json"  # committed to repo after each run
 LOOKBACK_HOURS = 48                    # catch any articles missed yesterday
 PRUNE_DAYS     = 90                    # drop seen entries older than this
-
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
 
@@ -436,7 +433,7 @@ def send_email(html_body: str, n_highlighted: int):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"]    = SENDER_EMAIL
-    msg["To"]      = RECIPIENT_EMAIL
+    msg["To"] = ", ".join(RECIPIENT_EMAIL)
     msg.attach(MIMEText(html_body, "html"))
 
     log.info(f"Sending email to {RECIPIENT_EMAIL} ...")
