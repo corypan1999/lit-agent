@@ -20,7 +20,7 @@ import anthropic
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-RECIPIENT_EMAIL = ["william.hudson@bcm.edu", "Colby.Hofferek@bcm.edu", "Dylan.Pfannenstiel@bcm.edu", "angela.addison@bcm.edu", "maria.stegantseva@bcm.edu"]
+RECIPIENT_EMAIL = ["william.hudson@bcm.edu", "Colby.Hofferek@bcm.edu", "Dylan.Pfannenstiel@bcm.edu", "angela.addison@bcm.edu", "maria.stegantseva@bcm.edu", "oscar.romero@bcm.edu"]
 SENDER_EMAIL    = os.environ["GMAIL_ADDRESS"]       # set in GitHub secrets
 GMAIL_APP_PASS  = os.environ["GMAIL_APP_PASSWORD"]  # set in GitHub secrets
 ANTHROPIC_KEY   = os.environ["ANTHROPIC_API_KEY"]   # set in GitHub secrets
