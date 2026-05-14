@@ -20,8 +20,7 @@ import anthropic
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-RECIPIENT_EMAIL = ["william.hudson@bcm.edu", "Colby.Hofferek@bcm.edu", "Dylan.Pfannenstiel@bcm.edu", "angela.addison@bcm.edu", "maria.stegantseva@bcm.edu", "oscar.romero@bcm.edu", 
-                  "sean.hyslop@bcm.edu", "amanda.xia@bcm.edu"]
+RECIPIENT_EMAIL = [e.strip() for e in os.environ["RECIPIENT_EMAILS"].split(",")]
 SENDER_EMAIL    = os.environ["GMAIL_ADDRESS"]       # set in GitHub secrets
 GMAIL_APP_PASS  = os.environ["GMAIL_APP_PASSWORD"]  # set in GitHub secrets
 ANTHROPIC_KEY   = os.environ["ANTHROPIC_API_KEY"]   # set in GitHub secrets
@@ -88,6 +87,18 @@ TIER_INSTRUCTIONS = {
 }
 
 # ---------------------------------------------------------------------------
+# Priority signals - give extra weight but still apply scientific judgment
+# ---------------------------------------------------------------------------
+
+PRIORITY_AUTHORS = [
+    "Rafi Ahmed", "E. John Wherry", "Dietmar Zehn", "Andrea Schietinger",
+]
+
+PRIORITY_TERMS = [
+    "T cell exhaustion", "LCMV", "granzyme A", "CD7", "CD101",
+]
+
+# ---------------------------------------------------------------------------
 # Research profile (passed to Claude as context)
 # ---------------------------------------------------------------------------
 
@@ -150,6 +161,20 @@ EXCLUDE if primarily about:
 - Non-cancer/non-infection contexts unless directly about exhaustion biology
 """
 
+PRIORITY_SIGNALS = f"""
+PRIORITY AUTHORS: If any of the following authors appear anywhere in the article
+metadata or abstract, weight the article more favorably toward inclusion, but still
+apply scientific judgment about the quality and relevance of the work:
+{", ".join(PRIORITY_AUTHORS)}
+
+PRIORITY TERMS: If any of the following terms appear in the title or abstract,
+similarly weight the article more favorably toward inclusion:
+{", ".join(PRIORITY_TERMS)}
+
+These signals should nudge borderline articles toward inclusion, not override
+judgment on clearly irrelevant work.
+"""
+
 # ---------------------------------------------------------------------------
 # Seen-articles cache (avoids duplicate digests)
 # ---------------------------------------------------------------------------
@@ -160,7 +185,6 @@ def load_seen() -> set:
         return set()
     with open(SEEN_FILE) as f:
         data = json.load(f)
-    # Support both old format (list of IDs) and new format (dict of id -> ISO timestamp)
     if isinstance(data, list):
         return set(data)
     cutoff = datetime.now(timezone.utc) - timedelta(days=PRUNE_DAYS)
@@ -263,6 +287,8 @@ RESEARCHER PROFILE:
 
 RELEVANCE CRITERIA:
 {RELEVANCE_CRITERIA}
+
+{PRIORITY_SIGNALS}
 
 You will receive a list of articles as JSON. Each article includes a "tier_instruction" field
 that tells you how strictly to apply the filter for that journal. Follow these tier instructions.
@@ -434,7 +460,7 @@ def send_email(html_body: str, n_highlighted: int):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"]    = SENDER_EMAIL
-    msg["To"] = ", ".join(RECIPIENT_EMAIL)
+    msg["To"]      = ", ".join(RECIPIENT_EMAIL)
     msg.attach(MIMEText(html_body, "html"))
 
     log.info(f"Sending email to {RECIPIENT_EMAIL} ...")
