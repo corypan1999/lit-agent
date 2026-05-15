@@ -122,7 +122,7 @@ PRIMARY FOCUS AREAS:
 - Antigen-specific T cells: clonal identity, TCR repertoire, tissue niches
 
 DISEASE CONTEXTS:
-- Solid tumors: HNSCC, brain metastases, lung cancer, glioma
+- Solid tumors: HNSCC, brain metastases, osteosarcoma
 - Chronic viral infection (LCMV model and human)
 
 KEY MOLECULES / PATHWAYS:
