@@ -32,6 +32,7 @@ jobs:
           ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
           GMAIL_ADDRESS:      ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAILS:   ${{ secrets.RECIPIENT_EMAILS }}
         run: python lit_agent.py
 
       # Commit the updated seen_articles.json so it persists reliably
