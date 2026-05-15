@@ -45,17 +45,17 @@ FEEDS = {
     "Cell":               ("https://www.cell.com/cell/inpress.rss",                      1),
     "Nature Immunology":  ("https://www.nature.com/ni.rss",                              1),
     "Immunity":           ("https://www.cell.com/immunity/inpress.rss",                  1),
-    "Science Immunology": ("https://www.science.org/journal/sciimmunol/rss",             1),
+    "Science Immunology": ("https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciimmunol", 1),
     "JEM":                ("https://rupress.org/jem/rss/ahead",                          1),
 
     # --- Tier 2 ---
     "PNAS":                         ("https://www.pnas.org/rss/current.xml",                           2),
     "Nature Communications":        ("https://www.nature.com/ncomms.rss",                              2),
-    "JCI":                          ("https://www.jci.org/feed/rss",                                   2),
+    "JCI":                          ("https://www.jci.org/rss",                                            2),
     "Cancer Cell":                  ("https://www.cell.com/cancer-cell/inpress.rss",                   2),
     "Journal of Clinical Oncology": ("https://ascopubs.org/action/showFeed?type=etoc&feed=rss&jc=jco", 2),
     "Nature Cancer":                ("https://www.nature.com/natcancer.rss",                           2),
-    "Cancer Discovery":             ("https://aacrjournals.org/cancerdiscovery/rss/ahead",             2),
+    "Cancer Discovery":             ("https://aacrjournals.org/rss/site_1000003/1000004.xml",             2),
     "Nature Methods":               ("https://www.nature.com/nmeth.rss",                               2),
     "Nature Biotechnology":         ("https://www.nature.com/nbt.rss",                                 2),
     "bioRxiv (Immunology)":         ("https://connect.biorxiv.org/biorxiv_xml.php?subject=immunology", 2),
@@ -63,20 +63,22 @@ FEEDS = {
 
     # --- Tier 3 ---
     "Cell Reports":               ("https://www.cell.com/cell-reports/inpress.rss",                         3),
-    "Cancer Immunology Research": ("https://aacrjournals.org/cancerimmunolres/rss/ahead",                   3),
+    "Cancer Immunology Research": ("https://aacrjournals.org/rss/site_1000007/1000006.xml",                 3),
     "Frontiers in Immunology":    ("https://www.frontiersin.org/journals/immunology/rss",                   3),
-    "Journal of Immunology":      ("https://www.jimmunol.org/rss/current.xml",                              3),
-    "Cancer Research":            ("https://aacrjournals.org/cancerres/rss/ahead",                          3),
+    "Journal of Immunology":      ("https://academic.oup.com/rss/site_6657/advanceAccess_4194.xml",         3),
+    "Cancer Research":            ("https://aacrjournals.org/rss/site_1000011/1000008.xml",                 3),
     "eLife":                      ("https://elifesciences.org/rss/recent.xml",                              3),
-    "Clinical Cancer Research":   ("https://aacrjournals.org/clincancerres/rss/ahead",                      3),
+    "Clinical Cancer Research":   ("https://aacrjournals.org/rss/site_1000013/1000009.xml",                 3),
     "Cell Systems":               ("https://www.cell.com/cell-systems/inpress.rss",                         3),
-    "Genome Biology":             ("https://genomebiology.biomedcentral.com/articles/most-recent/rss.xml",  3),
+    "Genome Biology":             ("https://genome.cshlp.org/rss/current.xml",                              3),
     "Nucleic Acids Research":     ("https://academic.oup.com/rss/site_5168/3091.xml",                       3),
     "Cell Reports Medicine":      ("https://www.cell.com/cell-reports-medicine/inpress.rss",                3),
     "npj Precision Oncology":     ("https://www.nature.com/npjprecisiononcology.rss",                       3),
     "Mucosal Immunology":         ("https://www.nature.com/mi.rss",                                         3),
     "European Journal of Immunology": ("https://onlinelibrary.wiley.com/feed/15214141/most-recent",         3),
     "bioRxiv (Genomics)":         ("https://connect.biorxiv.org/biorxiv_xml.php?subject=genomics",          3),
+    "Communications Medicine":    ("https://www.nature.com/commsmed.rss",                                   3),
+    "Communications Biology":     ("https://www.nature.com/commsbio.rss",                                   3),
 }
 
 # Tier thresholds passed to Claude
