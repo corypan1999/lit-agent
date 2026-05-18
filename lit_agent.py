@@ -70,7 +70,6 @@ FEEDS = {
     "eLife":                      ("https://elifesciences.org/rss/recent.xml",                              3),
     "Clinical Cancer Research":   ("https://aacrjournals.org/rss/site_1000013/1000009.xml",                 3),
     "Cell Systems":               ("https://www.cell.com/cell-systems/inpress.rss",                         3),
-    "Genome Biology":             ("https://genome.cshlp.org/rss/current.xml",                              3),
     "Nucleic Acids Research":     ("https://academic.oup.com/rss/site_5168/3091.xml",                       3),
     "Cell Reports Medicine":      ("https://www.cell.com/cell-reports-medicine/inpress.rss",                3),
     "npj Precision Oncology":     ("https://www.nature.com/npjprecisiononcology.rss",                       3),
@@ -347,6 +346,10 @@ def filter_articles(articles: list[dict]) -> tuple[list[dict], list[dict]]:
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": json.dumps(payload)}],
         )
+
+        if not response.content:
+            log.error(f"Empty response from Claude on batch {i//20 + 1}, skipping.")
+            continue
 
         raw = response.content[0].text.strip()
         if raw.startswith("```"):
