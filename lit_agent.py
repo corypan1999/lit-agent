@@ -46,7 +46,7 @@ FEEDS = {
     "Nature Immunology":  ("https://www.nature.com/ni.rss",                              1),
     "Immunity":           ("https://www.cell.com/immunity/inpress.rss",                  1),
     "Science Immunology": ("https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciimmunol", 1),
-    "JEM":                ("https://rupress.org/jem/rss/ahead",                          1),
+    "JEM":                ("https://rupress.org/rss/site_1000003/LatestArticles_1000004.xml",                          1),
 
     # --- Tier 2 ---
     "PNAS":                         ("https://www.pnas.org/rss/current.xml",                           2),
