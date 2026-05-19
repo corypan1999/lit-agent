@@ -46,16 +46,16 @@ FEEDS = {
     "Nature Immunology":  ("https://www.nature.com/ni.rss",                              1),
     "Immunity":           ("https://www.cell.com/immunity/inpress.rss",                  1),
     "Science Immunology": ("https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciimmunol", 1),
-    "JEM":                ("https://rupress.org/rss/site_1000003/LatestArticles_1000004.xml",                          1),
+    "JEM":                ("https://rupress.org/rss/site_1000003/LatestArticles_1000004.xml", 1),
 
     # --- Tier 2 ---
     "PNAS":                         ("https://www.pnas.org/rss/current.xml",                           2),
     "Nature Communications":        ("https://www.nature.com/ncomms.rss",                              2),
-    "JCI":                          ("https://www.jci.org/rss",                                            2),
+    "JCI":                          ("https://www.jci.org/rss",                                        2),
     "Cancer Cell":                  ("https://www.cell.com/cancer-cell/inpress.rss",                   2),
     "Journal of Clinical Oncology": ("https://ascopubs.org/action/showFeed?type=etoc&feed=rss&jc=jco", 2),
     "Nature Cancer":                ("https://www.nature.com/natcancer.rss",                           2),
-    "Cancer Discovery":             ("https://aacrjournals.org/rss/site_1000003/1000004.xml",             2),
+    "Cancer Discovery":             ("https://aacrjournals.org/rss/site_1000003/1000004.xml",          2),
     "Nature Methods":               ("https://www.nature.com/nmeth.rss",                               2),
     "Nature Biotechnology":         ("https://www.nature.com/nbt.rss",                                 2),
     "bioRxiv (Immunology)":         ("https://connect.biorxiv.org/biorxiv_xml.php?subject=immunology", 2),
@@ -218,6 +218,15 @@ def article_id(title: str, link: str) -> str:
 # Feed fetching
 # ---------------------------------------------------------------------------
 
+def fmt_authors(authors: list) -> str:
+    """Format author list: full if 6 or fewer, else first 3 ... last 3."""
+    if not authors:
+        return ""
+    if len(authors) <= 6:
+        return ", ".join(authors)
+    return ", ".join(authors[:3]) + " ... " + ", ".join(authors[-3:])
+
+
 def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], dict]:
     """Returns (new articles, existing timestamps dict for save_seen)."""
     cutoff = datetime.now(timezone.utc) - timedelta(hours=lookback_hours)
@@ -259,6 +268,13 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
             link    = entry.get("link", "").strip()
             summary = entry.get("summary", entry.get("description", "")).strip()
 
+            # Extract authors
+            authors = []
+            if hasattr(entry, "authors"):
+                authors = [a.get("name", "") for a in entry.authors if a.get("name")]
+            elif hasattr(entry, "author") and entry.author:
+                authors = [entry.author]
+
             aid = article_id(title, link)
             if aid in seen:
                 continue
@@ -271,6 +287,7 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
                 "link":     link,
                 "abstract": summary[:2000],
                 "pub_date": pub.strftime("%b %d, %Y") if pub else "recent",
+                "authors":  authors,
             })
 
     log.info(f"Fetched {len(articles)} new articles across all feeds.")
@@ -335,6 +352,7 @@ def filter_articles(articles: list[dict]) -> tuple[list[dict], list[dict]]:
                 "tier_instruction": TIER_INSTRUCTIONS[a["tier"]],
                 "title":            a["title"],
                 "abstract":         a["abstract"],
+                "authors":          a.get("authors", []),
             }
             for a in batch
         ]
@@ -394,6 +412,13 @@ def build_email_html(highlighted: list[dict], borderline: list[dict],
                       f'{tier_labels.get(tier,"")}</span>')
         meta = (f'<span style="color:#7f8c8d;font-size:13px;">'
                 f'{art["journal"]} &bull; {art["pub_date"]}</span>')
+
+        author_str = fmt_authors(art.get("authors", []))
+        author_html = (
+            f'<p style="margin:2px 0 4px;font-size:12px;color:#999;font-style:italic;">'
+            f'{author_str}</p>'
+        ) if author_str else ""
+
         if compact:
             blurb = (f'<p style="margin:4px 0 0;font-size:13px;color:#555;">'
                      f'{art.get("summary","")}</p>') if art.get("summary") else ""
@@ -401,6 +426,7 @@ def build_email_html(highlighted: list[dict], borderline: list[dict],
                     f'border-bottom:1px solid #eee;">'
                     f'<p style="margin:0 0 2px;font-size:14px;font-weight:600;">'
                     f'{tier_badge}{link_html}</p>'
+                    f'{author_html}'
                     f'{meta}{blurb}</div>')
         else:
             summary_html = (
@@ -411,6 +437,7 @@ def build_email_html(highlighted: list[dict], borderline: list[dict],
                     f'border-left:4px solid {tier_colors.get(tier,"#888")};border-radius:4px;">'
                     f'<p style="margin:0 0 4px;font-size:15px;font-weight:700;">'
                     f'{tier_badge}{link_html}</p>'
+                    f'{author_html}'
                     f'{meta}{summary_html}</div>')
 
     highlighted_html = "".join(article_card(a) for a in highlighted) if highlighted else (
