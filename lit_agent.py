@@ -28,6 +28,7 @@ ANTHROPIC_KEY   = os.environ["ANTHROPIC_API_KEY"]   # set in GitHub secrets
 SEEN_FILE      = "seen_articles.json"  # committed to repo after each run
 LOOKBACK_HOURS = 48                    # catch any articles missed yesterday
 PRUNE_DAYS     = 90                    # drop seen entries older than this
+MAX_ARTICLES_PER_FEED = 100            # safety cap per feed per run
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
 
@@ -254,6 +255,9 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
 
         feed_count = 0
         for entry in feed.entries:
+            if feed_count >= MAX_ARTICLES_PER_FEED:
+                log.warning(f"  -> {journal}: cap of {MAX_ARTICLES_PER_FEED} reached, stopping early")
+                break
             pub = None
             for attr in ("published_parsed", "updated_parsed"):
                 if hasattr(entry, attr) and getattr(entry, attr):
