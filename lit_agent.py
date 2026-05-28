@@ -10,6 +10,7 @@ import json
 import smtplib
 import hashlib
 import logging
+import time
 import feedparser
 from datetime import datetime, timezone, timedelta
 from email.mime.multipart import MIMEMultipart
@@ -251,11 +252,11 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
             log.error(f"  Could not fetch {journal}: {e}")
             continue
 
+        feed_count = 0
         for entry in feed.entries:
             pub = None
             for attr in ("published_parsed", "updated_parsed"):
                 if hasattr(entry, attr) and getattr(entry, attr):
-                    import time
                     pub = datetime.fromtimestamp(
                         time.mktime(getattr(entry, attr)), tz=timezone.utc
                     )
@@ -289,6 +290,9 @@ def fetch_articles(lookback_hours: int = LOOKBACK_HOURS) -> tuple[list[dict], di
                 "pub_date": pub.strftime("%b %d, %Y") if pub else "recent",
                 "authors":  authors,
             })
+            feed_count += 1
+
+        log.info(f"  -> {journal}: {feed_count} new articles")
 
     log.info(f"Fetched {len(articles)} new articles across all feeds.")
     return articles, existing_timestamps
@@ -358,12 +362,26 @@ def filter_articles(articles: list[dict]) -> tuple[list[dict], list[dict]]:
         ]
 
         log.info(f"Filtering batch {i//20 + 1} ({len(batch)} articles) ...")
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=4096,
-            system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": json.dumps(payload)}],
-        )
+
+        # Retry up to 3 times with exponential backoff on transient errors
+        response = None
+        for attempt in range(3):
+            try:
+                response = client.messages.create(
+                    model="claude-sonnet-4-6",
+                    max_tokens=4096,
+                    system=SYSTEM_PROMPT,
+                    messages=[{"role": "user", "content": json.dumps(payload)}],
+                )
+                break
+            except (anthropic.InternalServerError, anthropic.APIStatusError) as e:
+                wait = 2 ** attempt
+                log.warning(f"  API error on attempt {attempt+1}: {e}. Retrying in {wait}s...")
+                time.sleep(wait)
+
+        if response is None:
+            log.error(f"Batch {i//20 + 1} failed after 3 attempts, skipping.")
+            continue
 
         if not response.content:
             log.error(f"Empty response from Claude on batch {i//20 + 1}, skipping.")
