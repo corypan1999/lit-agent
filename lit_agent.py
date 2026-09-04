@@ -99,7 +99,7 @@ TIER_INSTRUCTIONS = {
 # ---------------------------------------------------------------------------
 
 PRIORITY_AUTHORS = [
-    "Benjamin L Ebert", "Siddhartha Jaiswal", "Ravindra Majeti", "Vijay G Sankaran", "Dan A Landau", "R Coleman Lindsley"
+    "Benjamin L Ebert", "Siddhartha Jaiswal", "Ravindra Majeti", "Vijay G Sankaran", "Dan A Landau", "R Coleman Lindsley", "Iannis Aifantis"
 ]
 
 PRIORITY_TERMS = [
