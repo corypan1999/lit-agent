@@ -2,6 +2,8 @@
 
 A daily literature monitoring agent for stem cell and cancer biology research. Scrapes RSS feeds from 35+ journals, uses Claude AI to filter articles for relevance to your research program, and emails a digest every morning.
 
+Built by Will Hudson at BCM, adapted for use
+
 ## What it does
 
 Every day at 8 AM, the agent:
