@@ -46,28 +46,33 @@ FEEDS = {
     "Nature":             ("https://www.nature.com/nature.rss",                          1),
     "Science":            ("https://www.science.org/rss/news_current.xml",               1),
     "Cell":               ("https://www.cell.com/cell/inpress.rss",                      1),
-    "Nature Immunology":  ("https://www.nature.com/ni.rss",                              1),
-    "Immunity":           ("https://www.cell.com/immunity/inpress.rss",                  1),
-    "Science Immunology": ("https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciimmunol", 1),
-    "JEM":                ("https://rupress.org/rss/site_1000003/LatestArticles_1000004.xml", 1),
+    "Cell Stem Cell":     ("https://www.cell.com/cell-stem-cell/inpress.rss",            1),
+    "Cancer Cell":        ("https://www.cell.com/cancer-cell/inpress.rss",               1),
+    "Molecular Cell":     ("https://www.cell.com/molecular-cell/inpress.rss",            1),
+    "Nature Cell Biology":("https://www.nature.com/ncb.rss",                             1),
 
     # --- Tier 2 ---
     "PNAS":                         ("https://www.pnas.org/rss/current.xml",                           2),
     "Nature Communications":        ("https://www.nature.com/ncomms.rss",                              2),
     "JCI":                          ("https://www.jci.org/rss",                                        2),
-    "Cancer Cell":                  ("https://www.cell.com/cancer-cell/inpress.rss",                   2),
+    "Nature Immunology":            ("https://www.nature.com/ni.rss",                                  2),
+    "Immunity":                     ("https://www.cell.com/immunity/inpress.rss",                      2),
+    "Nature Chemical Biology":      ("https://www.nature.com/nchembio.rss",                            2),
     "Journal of Clinical Oncology": ("https://ascopubs.org/action/showFeed?type=etoc&feed=rss&jc=jco", 2),
     "Nature Cancer":                ("https://www.nature.com/natcancer.rss",                           2),
     "Cancer Discovery":             ("https://aacrjournals.org/rss/site_1000003/1000004.xml",          2),
     "Nature Methods":               ("https://www.nature.com/nmeth.rss",                               2),
     "Nature Biotechnology":         ("https://www.nature.com/nbt.rss",                                 2),
+    "Blood Cancer Discovery":       ("https://aacrjournals.org/rss/site_1000001/1000003.xml",          2),
+    "JEM":                          ("https://rupress.org/rss/site_1000003/LatestArticles_1000004.xml",2),
+    "Science Immunology":           ("https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=sciimmunol", 2),
     "bioRxiv (Immunology)":         ("https://connect.biorxiv.org/biorxiv_xml.php?subject=immunology", 2),
     "bioRxiv (Cancer Biology)":     ("https://connect.biorxiv.org/biorxiv_xml.php?subject=cancer_biology", 2),
+    "bioRxiv (Developmental Biology)":  ("https://connect.biorxiv.org/biorxiv_xml.php?subject=developmental_biology", 2),
 
     # --- Tier 3 ---
     "Cell Reports":               ("https://www.cell.com/cell-reports/inpress.rss",                         3),
     "Cancer Immunology Research": ("https://aacrjournals.org/rss/site_1000007/1000006.xml",                 3),
-    "Frontiers in Immunology":    ("https://www.frontiersin.org/journals/immunology/rss",                   3),
     "Journal of Immunology":      ("https://academic.oup.com/rss/site_6657/advanceAccess_4194.xml",         3),
     "Cancer Research":            ("https://aacrjournals.org/rss/site_1000011/1000008.xml",                 3),
     "eLife":                      ("https://elifesciences.org/rss/recent.xml",                              3),
@@ -76,7 +81,6 @@ FEEDS = {
     "Nucleic Acids Research":     ("https://academic.oup.com/rss/site_5168/3091.xml",                       3),
     "Cell Reports Medicine":      ("https://www.cell.com/cell-reports-medicine/inpress.rss",                3),
     "npj Precision Oncology":     ("https://www.nature.com/npjprecisiononcology.rss",                       3),
-    "Mucosal Immunology":         ("https://www.nature.com/mi.rss",                                         3),
     "European Journal of Immunology": ("https://onlinelibrary.wiley.com/feed/15214141/most-recent",         3),
     "bioRxiv (Genomics)":         ("https://connect.biorxiv.org/biorxiv_xml.php?subject=genomics",          3),
     "Communications Medicine":    ("https://www.nature.com/commsmed.rss",                                   3),
@@ -95,7 +99,7 @@ TIER_INSTRUCTIONS = {
 # ---------------------------------------------------------------------------
 
 PRIORITY_AUTHORS = [
-    "Benjamin L Ebert", "Siddhartha Jaiswal", "Ravindra Majeti", "Vijay G Sankaran",
+    "Benjamin L Ebert", "Siddhartha Jaiswal", "Ravindra Majeti", "Vijay G Sankaran", "Dan A Landau", "R Coleman Lindsley"
 ]
 
 PRIORITY_TERMS = [
@@ -151,20 +155,25 @@ TRANSLATIONAL INTERESTS:
 
 RELEVANCE_CRITERIA = """
 INCLUDE if the article:
-- Reports new findings on T cell exhaustion, dysfunction, or stemness
-- Studies TILs or antigen-specific T cells in any solid tumor context
-- Describes spatial or single-cell methods applicable to immune cell mapping
-- Investigates PD-1 pathway biology or checkpoint blockade response/resistance
-- Examines how tissue niches or TME shape T cell fate
-- Reports sex- or hormone-mediated differences in T cell function or tumor immunity
-- Develops spatial transcriptomics, TCR sequencing, or multi-omic immune profiling
-- Presents clinical data linking T cell phenotypes to immunotherapy outcomes
+- Reports new findings on mechanisms of hematopoietic stem cell fate decisions
+- Studies the fitness landscape of clonal hematopoiesis drivers
+- Studies the impact of genetic background variation on clonal hematopoiesis fitness landscape or hematopoietic malignancy risk
+- Studies mechanisms of transcriptional and post-transcriptional regulation in hematopoietic stem cells, clonal hematopoiesis, and MDS or AML
+- Studies regulation of RNA metabolism (transcription, RNA processing, or RNA splicing) in hematopoietic stem cells, clonal hematopoiesis, or MDS or AML
+- Studies regulation of chromatin biology (accessibility, architecture, or histone modification) in hematopoietic stem cells, clonal hematopoiesis, or MDS or AML
+- Studies genome stability, DNA damage response, and telomere activity in hematopoietic stem cells, clonal hematopoiesis, or clonal expansion
+- Studies other epigenetic regulation as it pertains to HSCs, clonal hematopoiesis, MDS, or AML
+- Describes bulk or single-cell methods applicable to hematopoiesis
+- Investigates malignant transformation of hematopoietic stem cells under any clonal hematopoiesis driver, or without clonal hematopoiesis.
+- Develops multi-omic hematopoietic profiling
+- Investigates somatic mosaicism and expansion, as well as lineage tracing
+- Develops methods of saturation mutagenesis of any gene relevant to epigenetic regulation
+- Describes anything about form or function of YLPM1 under any context
 
 EXCLUDE if primarily about:
-- B cells, innate immunity, or autoimmunity (unless direct T cell angle)
-- Non-immune aspects of cancer biology (unless immunotherapy connection)
-- Structural biology unrelated to above
-- Non-cancer/non-infection contexts unless directly about exhaustion biology
+- Terminally differentiated hematopoietic cells 
+- Non-hematopoietic contexts, unless genes involved are significant in hematopoiesis or include information listed above in INCLUDE criteria
+
 """
 
 PRIORITY_SIGNALS = f"""
