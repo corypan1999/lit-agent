@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Literature Monitoring Agent for Dr. William H. Hudson
-Fetches new articles from immunology/cancer journals, filters for relevance
+Literature Monitoring Agent for Cory Pan
+Built by Will Hudson at BCM
+Fetches new articles from cancer, stem cell, and related journals, filters for relevance
 using Claude, and sends a daily HTML email digest.
 """
 
@@ -94,11 +95,11 @@ TIER_INSTRUCTIONS = {
 # ---------------------------------------------------------------------------
 
 PRIORITY_AUTHORS = [
-    "Rafi Ahmed", "E. John Wherry", "Dietmar Zehn", "Andrea Schietinger",
+    "Benjamin L Ebert", "Siddhartha Jaiswal", "Ravindra Majeti", "Vijay G Sankaran",
 ]
 
 PRIORITY_TERMS = [
-    "T cell exhaustion", "LCMV", "granzyme A", "CD7", "CD101",
+    "clonal hematopoiesis", "myelodysplastic syndrome", "acute myeloid leukemia", "DNMT3A", "TET2", "ASXL1", "YLPM1", "SRSF2", "SF3B1", "TP53", "PPM1D", "SRCAP"
 ]
 
 # ---------------------------------------------------------------------------
@@ -106,44 +107,46 @@ PRIORITY_TERMS = [
 # ---------------------------------------------------------------------------
 
 RESEARCH_PROFILE = """
-Dr. Hudson's lab studies CD8+ T cell biology in chronic disease - primarily
-T cell exhaustion in cancer and persistent viral infection.
+I am a graduate student studying molecular regulation of hematopoietic stem cell fate, with relevance to clonal hematopoiesis, myelodysplastic syndrome, acute myeloid leukemia, and other lymphohematopoietic malignancies.
+Additionally, I have long-term interests in building tools to better understand variant effects of epigenetic regulators, as well as functional genomics.
 
 PRIMARY FOCUS AREAS:
-- T cell exhaustion: mechanisms, transcriptional/epigenetic regulation,
-  differentiation states (stem-like/TCF1+, transitory, terminally exhausted)
-- Tumor-infiltrating lymphocytes (TILs): phenotype, function, spatial organization
-- Immunotherapy: checkpoint blockade (PD-1/PD-L1), response vs. resistance,
-  "cold" tumor microenvironments
-- Spatial immunology: Visium, Xenium, spatial TCR sequencing, tissue-level
-  immune mapping
-- Single-cell multi-omics: scRNA-seq, spectral flow cytometry
-- Sex-specific immune signaling: androgen-mediated pathways in T cell
-  function and exhaustion
-- Antigen-specific T cells: clonal identity, TCR repertoire, tissue niches
+- Molecular regulation of hematopoietic stem cell and cancer cell fate: mechanisms, transcriptional/epigenetic regulation,
+  differentiation states
+- Clonal hematopoiesis: WGS, variant calling, phenotype, mechanism and function, novel clonal hematopoiesis driver genes
+- Hematopoietic malignancies: acquisition of cancer-driving mutations, mechanism of driver mutations, condensates, transcriptional/epigenetic regulation
+- RNA biology: splicing, RNA sequestration, transcriptional control, post-transcriptional regulation
+- Chromatin biology: chromatin accessibility and chromatin conformation, chromatin architecture and organization, histone modifications, histone modification readers and writers
+- DNA methylation: mechanisms of DNA methylation establishment, maintenance, and demethylation
+- Intrinsically-disordered proteins: adaptor functions, short linear motifs, IDR-IDR and IDR-structured domain interactions
 
 DISEASE CONTEXTS:
-- Solid tumors: HNSCC, brain metastases, osteosarcoma
-- Chronic viral infection (LCMV model and human)
+- Clonal hematopoiesis: fitness landscape, canonical drivers of CH, novel drivers of CH
+- Hematologic malignancies: myelodysplastic syndrome (primary and therapy-driven), acute myeloid leukemia
 
 KEY MOLECULES / PATHWAYS:
-- PD-1, TCF-1 (TCF7), TOX, TIM-3, LAG-3, CD7, CD101, TIGIT
-- mTOR signaling in T cell differentiation
-- TGF-β in exhaustion and stem-like T cell maintenance
-- lncRNA regulation of immune cell fate
-- Nrf2/oxidative stress in tumor-immune interactions
+- DNMT3A, TET2, ASXL1, TP53, PPM1D, SRCAP, SRSF2, SF3B1, YLPM1
+- NPM1, FLT3, NUP98, KMT2A, HOX group genes
+- Condensate formation and regulation of transcription in cancer
 
 TECHNOLOGIES:
-- Visium and Xenium spatial transcriptomics
-- Spatial TCR clonotype mapping
+- Nanopore sequencing
+- WGS
+- WGBS, EM-seq
+- ATAC-seq
+- CUT&RUN, ChIP-seq
+- Hi-C
+- RNA-seq
+- single-cell sequencing 
+- bioinformatics pipelines
 - Spectral flow cytometry
-- Organoid-T cell co-culture systems
-- scRNA-seq analysis pipelines
+- HSC transplant assays
+- HSPC ex-vivo culture
 
 TRANSLATIONAL INTERESTS:
-- Biomarkers of immunotherapy response
-- Converting immunotherapy-resistant ("cold") tumors
-- T cell spatial organization as a predictor of patient outcomes
+- Risk stratification of hematologic malignancies based on CH type
+- Interventions for pre-leukemic HSCs in clonal hematopoiesis
+- Novel treatments and therapeutic vulnerabilities of MDS and AML
 """
 
 RELEVANCE_CRITERIA = """
