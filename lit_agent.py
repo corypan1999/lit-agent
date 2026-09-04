@@ -119,7 +119,7 @@ PRIMARY FOCUS AREAS:
   differentiation states
 - Clonal hematopoiesis: WGS, variant calling, phenotype, mechanism and function, novel clonal hematopoiesis driver genes
 - Hematopoietic malignancies: acquisition of cancer-driving mutations, mechanism of driver mutations, condensates, transcriptional/epigenetic regulation
-- RNA biology: splicing, RNA sequestration, transcriptional control, post-transcriptional regulation
+- RNA biology: splicing, RNA sequestration, transcriptional control, post-transcriptional regulation, translation
 - Chromatin biology: chromatin accessibility and chromatin conformation, chromatin architecture and organization, histone modifications, histone modification readers and writers
 - DNA methylation: mechanisms of DNA methylation establishment, maintenance, and demethylation
 - Intrinsically-disordered proteins: adaptor functions, short linear motifs, IDR-IDR and IDR-structured domain interactions
