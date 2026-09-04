@@ -1,6 +1,6 @@
 # lit-agent
 
-A daily literature monitoring agent for immunology and cancer biology research. Scrapes RSS feeds from 35+ journals, uses Claude AI to filter articles for relevance to your research program, and emails a digest every morning.
+A daily literature monitoring agent for stem cell and cancer biology research. Scrapes RSS feeds from 35+ journals, uses Claude AI to filter articles for relevance to your research program, and emails a digest every morning.
 
 ## What it does
 
@@ -14,9 +14,9 @@ Every day at 8 AM, the agent:
 
 Journals are organized into three tiers that control how strictly Claude filters:
 
-- **Tier 1** (Nature, Science, Cell, Nature Immunology, Immunity, Science Immunology, JEM) — broad net; include if there is any plausible connection to the research
-- **Tier 2** (PNAS, JCI, Cancer Cell, Nature Cancer, Cancer Discovery, Nature Methods, Nature Biotechnology, bioRxiv Immunology, bioRxiv Cancer Biology, and others) — standard filter; include if clearly relevant
-- **Tier 3** (Cell Reports, Frontiers in Immunology, Journal of Immunology, eLife, Cancer Research, Communications Medicine, Communications Biology, and others) — strict filter; only include strong direct matches
+- **Tier 1** — broad net; include if there is any plausible connection to the research
+- **Tier 2** — standard filter; include if clearly relevant
+- **Tier 3** — strict filter; only include strong direct matches
 
 Priority authors and terms can be configured to nudge borderline articles toward inclusion while still applying scientific judgment.
 
