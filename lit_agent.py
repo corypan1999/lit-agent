@@ -90,7 +90,7 @@ FEEDS = {
 # Tier thresholds passed to Claude
 TIER_INSTRUCTIONS = {
     1: "TIER 1 journal (high-profile, broad scope). Apply a BROAD filter: include this article if there is ANY plausible connection to the researcher's work, even tangential.",
-    2: "TIER 2 journal (strong immunology/cancer focus). Apply a STANDARD filter: include if the article is clearly relevant to the researcher's core interests.",
+    2: "TIER 2 journal (strong stem cell/epigenetics/chromatin/RNA/cancer focus). Apply a STANDARD filter: include if the article is clearly relevant to the researcher's core interests.",
     3: "TIER 3 journal (high-volume or broad-scope). Apply a STRICT filter: include ONLY if the article is a strong, direct match for the researcher's specific focus areas. Err on the side of exclusion.",
 }
 
