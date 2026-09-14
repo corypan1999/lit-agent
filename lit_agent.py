@@ -169,7 +169,7 @@ INCLUDE if the article:
 - Investigates somatic mosaicism and expansion, as well as lineage tracing
 - Develops methods of saturation mutagenesis of any gene relevant to epigenetic regulation
 - Describes anything about form or function of YLPM1 under any context
-- Describes T-cell differention lymphoid lineage commitment
+- Describes T-cell differentiation and/or lymphoid lineage commitment
 
 EXCLUDE if primarily about:
 - Terminally differentiated hematopoietic cells 
